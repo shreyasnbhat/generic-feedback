@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "2698671724",
+    "firebase_url": "https://feedback-9e534.firebaseio.com",
+    "project_id": "feedback-9e534",
+    "storage_bucket": "feedback-9e534.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:2698671724:android:d783146a96665b44",
+        "android_client_info": {
+          "package_name": "com.lnt.feedback"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "2698671724-mvnaj5gr1r2smu6jks7v16ui6i5gt1n2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAcxXDhfSek2NgKXhV-v077xWrpuP6BqkQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
