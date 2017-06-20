@@ -66,7 +66,7 @@ public class TextFieldViewHolder extends RecyclerView.ViewHolder {
     public void bind(){
 
         description.setText(textField.getTitle());
-        entry.setHint(textField.getHint());
+        entry.setHint(textField.getDescription());
 
         if(DataSaveUtil.dataMap.get(description.getText().toString()) != null){
             entry.setText(DataSaveUtil.dataMap.get(description.getText().toString()));

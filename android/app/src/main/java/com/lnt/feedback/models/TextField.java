@@ -7,21 +7,21 @@ package com.lnt.feedback.models;
 public class TextField {
 
     private String title;
-    private String hint;
+    private String description;
     private int inputType = -1;
 
     public TextField(String title) {
         this.title = title;
     }
 
-    public TextField(String title, String hint) {
+    public TextField(String title, String description) {
         this.title = title;
-        this.hint = hint;
+        this.description = description;
     }
 
-    public TextField(String title, String hint, int inputType) {
+    public TextField(String title, String description, int inputType) {
         this.title = title;
-        this.hint = hint;
+        this.description = description;
         this.inputType = inputType;
     }
 
@@ -33,12 +33,12 @@ public class TextField {
         this.title = title;
     }
 
-    public String getHint() {
-        return hint;
+    public String getDescription() {
+        return description;
     }
 
-    public void setHint(String hint) {
-        this.hint = hint;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public int getInputType() {

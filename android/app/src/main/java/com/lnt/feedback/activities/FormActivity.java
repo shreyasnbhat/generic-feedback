@@ -60,6 +60,7 @@ public class FormActivity extends AppCompatActivity {
         mFirebaseFormReference.child(formId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+
                 formList.clear();
 
                 for (DataSnapshot shot : dataSnapshot.getChildren()) {
@@ -67,8 +68,8 @@ public class FormActivity extends AppCompatActivity {
                     String type = shot.child("type").getValue(String.class);
                     try {
                         if (type.equals("EditText")) {
-                            String title = shot.child("hint").getValue(String.class);
-                            String hint = shot.child("hint").getValue(String.class);
+                            String title = shot.child("description").getValue(String.class);
+                            String hint = shot.child("description").getValue(String.class);
                             String inputType = shot.child("inputType").getValue(String.class);
                             int input = getInputTypeFromString(inputType);
                             TextField text = new TextField(title, hint, input);
@@ -104,26 +105,32 @@ public class FormActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 HashMap<String, String> map = DataSaveUtil.dataMap;
-                boolean isIDtaken = false;
                 String formEntreeID = "IdError";
+
+                map.put("ID",getIntent().getStringExtra("ID"));
+                map.put("Name",getIntent().getStringExtra("name"));
+                map.put("College Code",getIntent().getStringExtra("college code"));
 
                 DatabaseReference mFirebaseSubmitReference = FirebaseDatabase.getInstance().getReference().child("Submissions").child(formId);
                 DatabaseReference submitReference = mFirebaseSubmitReference.child("NodeError");
 
+                formEntreeID = map.get("ID");
+                Log.e("Map",map.toString());
+                submitReference = mFirebaseSubmitReference.child(formEntreeID);
+
+                //Initialize Submission Entered Parameters
+                submitReference.child("Name").setValue(map.get("Name"));
+                submitReference.child("College Code").setValue(map.get("College Code"));
+                submitReference.child("ID").setValue(map.get("ID"));
+
+                //Iterate over Form Items and collect Submissions
                 for (Object formItem : formList) {
                     if (formItem instanceof TextField) {
                         TextField textField = (TextField) formItem;
 
-                        //Get FormEntreeID
-                        if(!isIDtaken){
-                            formEntreeID = map.get(textField.getHint());
-                            isIDtaken = true;
-                        }
 
-                        submitReference = mFirebaseSubmitReference.child(formEntreeID);
-
-                        if (map.get(textField.getHint()) != null)
-                            submitReference.child(textField.getHint()).setValue(map.get(textField.getHint()));
+                        if (map.get(textField.getDescription()) != null)
+                            submitReference.child(textField.getDescription()).setValue(map.get(textField.getDescription()));
                     }
                     else if (formItem instanceof SpinnerChoice) {
 
