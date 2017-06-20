@@ -1,6 +1,7 @@
 package com.lnt.feedback.activities;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.renderscript.Sampler;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
@@ -30,6 +31,7 @@ public class FormSetupActivity extends AppCompatActivity {
     private TextView numberTextView;
     private Button submitButton;
     private Button confirmDetailButton;
+    private TextView detailTextView;
 
     private String collegeCode;
 
@@ -45,6 +47,9 @@ public class FormSetupActivity extends AppCompatActivity {
         numberTextView = (TextView)findViewById(R.id.mobile_number);
         submitButton = (Button)findViewById(R.id.submit_id);
         confirmDetailButton = (Button)findViewById(R.id.confirm_details);
+        detailTextView = (TextView)findViewById(R.id.details);
+
+        detailTextView.setBackgroundColor(getIntent().getIntExtra("color",0));
 
         mValueEventListener = new ValueEventListener() {
             @Override

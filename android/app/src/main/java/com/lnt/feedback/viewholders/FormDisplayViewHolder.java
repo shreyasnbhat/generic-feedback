@@ -40,6 +40,7 @@ public class FormDisplayViewHolder extends RecyclerView.ViewHolder  {
             public void onClick(View v) {
                 Intent intent = new Intent(context, FormSetupActivity.class);
                 intent.putExtra("form_id",formDisplayObject.getFormId());
+                intent.putExtra("color",generator.getColor(formTitle.getText().toString()));
                 context.startActivity(intent);
             }
         });
