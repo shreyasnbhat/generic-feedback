@@ -1,9 +1,16 @@
 package com.lnt.feedback.activities;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -12,7 +19,11 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 
 import com.google.firebase.database.DataSnapshot;
@@ -40,6 +51,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private DrawerLayout drawer;
     private NavigationView navigationView;
     private ProgressBar progressBar;
+    private FrameLayout contentFrame;
+
+    public static final String MyPREFERENCES = "myPrefs" ;
+    private SharedPreferences sharedpreferences;
 
     private String USERNAME = "Anonymous";
 
@@ -59,6 +74,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         recyclerView = (RecyclerView)findViewById(R.id.form_recycler);
         progressBar = (ProgressBar)findViewById(R.id.progress_bar);
+        contentFrame = (FrameLayout)findViewById(R.id.content_frame);
+
+        //Shared Prefernces Setup
+        sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
 
         //Toolbar Setup
         setSupportActionBar(toolbar);
@@ -142,10 +161,48 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if(id ==  R.id.nav_sing_out){
+        if(id ==  R.id.admin_login){
 
+            final SharedPreferences.Editor editor = sharedpreferences.edit();
+            SharedPreferences prefs = getSharedPreferences(MyPREFERENCES,Context.MODE_PRIVATE);
+
+
+            if(!(prefs.getString("user_id","").equals("admin") && prefs.getString("user_password","").equals("admin"))){
+                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+                LayoutInflater inflater = this.getLayoutInflater();
+                View dialogView = inflater.inflate(R.layout.login_dialog_layout, null);
+                final EditText userId = (EditText) dialogView.findViewById(R.id.user_id);
+                final EditText userPassword = (EditText) dialogView.findViewById(R.id.user_password);
+                Button submit = (Button) dialogView.findViewById(R.id.submit_button);
+                dialogBuilder.setView(dialogView);
+                final AlertDialog alertDialog = dialogBuilder.create();
+                submit.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        String username = userId.getText().toString();
+                        String password = userPassword.getText().toString();
+
+                        editor.putString("user_id", username);
+                        editor.putString("user_password", password);
+                        editor.apply();
+
+                        if (username.equals("admin") && password.equals("admin")) {
+                            Toast.makeText(MainActivity.this, "You are In", Toast.LENGTH_SHORT).show();
+                            Intent i = new Intent(MainActivity.this, AdminActivity.class);
+                            startActivity(i);
+                            alertDialog.cancel();
+                        } else {
+                            Toast.makeText(MainActivity.this, "Try Again", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+                alertDialog.show();
+            }
+            else{
+                Intent i = new Intent(MainActivity.this, AdminActivity.class);
+                startActivity(i);
+            }
         } else if (id == R.id.nav_share) {
 
         } else if (id == R.id.nav_send) {

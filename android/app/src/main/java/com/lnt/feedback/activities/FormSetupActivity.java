@@ -50,6 +50,12 @@ public class FormSetupActivity extends AppCompatActivity {
         detailTextView = (TextView)findViewById(R.id.details);
 
         detailTextView.setBackgroundColor(getIntent().getIntExtra("color",0));
+        confirmDetailButton.setVisibility(View.INVISIBLE);
+
+        if(getSupportActionBar()!=null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
 
         mValueEventListener = new ValueEventListener() {
             @Override
@@ -63,6 +69,7 @@ public class FormSetupActivity extends AppCompatActivity {
                 nameTextView.setText(name);
                 numberTextView.setText(mobile);
                 emailTextView.setText(email);
+                confirmDetailButton.setVisibility(View.VISIBLE);
             }
 
             @Override

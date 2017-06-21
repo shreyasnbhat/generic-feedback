@@ -29,7 +29,8 @@
         <activity
             android:name=".LoginActivity"
             android:label="@string/title_activity_login" />
-        <activity android:name=".activities.FormSetupActivity"></activity>
+        <activity android:name=".activities.FormSetupActivity" />
+        <activity android:name=".activities.AdminActivity"></activity>
     </application>
 
 </manifest>
