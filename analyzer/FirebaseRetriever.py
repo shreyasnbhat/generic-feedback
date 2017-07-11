@@ -5,7 +5,7 @@ import numpy as np
 import seaborn as sns
 from collections import Counter
 import matplotlib.pyplot as plt
-from utils import IntegerConvertor
+from utils import *
 import os
 
 firebase = firebase.FirebaseApplication('https://feedback-9e534.firebaseio.com', None);
@@ -33,22 +33,22 @@ if __name__ == '__main__':
     '''Store data in DataFrame'''
     for element in result:
         for key in result[element]:
-            columns.append(key)
-        break
+            for sub_keys in result[element][key]:
+                columns.append(sub_keys)
+            break
 
     dataframe = pd.DataFrame(columns=columns)
+    print columns
     counter = 0
 
     print ""
     print "Printing Element Wise Result"
     print ""
     for element in result:
-        row_val = []
         print element
-        print result[element]
-        print ""
-        dataframe.loc[counter] = result[element]
-        counter+=1
+        for submission_day in result[element] :
+            dataframe.loc[counter] = result[element][submission_day]
+            counter += 1
 
     print dataframe
 
@@ -58,33 +58,45 @@ if __name__ == '__main__':
     sns.set_style("darkgrid")
     sns.set(font_scale=1.4)  # crazy big
 
-    '''Student Distribution'''
-    sns.countplot(x='Session Location',data=dataframe,palette='deep')
+    writer = pd.ExcelWriter('Submissions/kaushalya-feedback.xlsx')
+
+
+    '''Student Distribution
+    TODO
     plt.ylabel("No of Students")
     plt.savefig("Graphs/student_distribution.png")
+    dataframe.to_excel(writer,'Feedback')
+    '''''
 
-    '''Save to Excel'''
-    writer = pd.ExcelWriter('Submissions/kaushalya-feedback.xlsx')
-    dataframe.to_excel(writer,'Sheet1')
-    writer.save()
+    locations = ['Mahape','Vidyalankar','Madh Island']
 
     '''Get Location Wise Ratings'''
     FacultyRatingsByLocation = dict(dataframe.groupby(['Session Location'])['Faculty Quality'].mean())
     print "Faculty Rating by Location"
     print FacultyRatingsByLocation
 
+    FacultyRatingsByLocation = fillZeroes(FacultyRatingsByLocation,locations)
+
     FoodQualityByLocation = dict(dataframe.groupby(['Session Location'])['Food Quality'].mean())
     print "Food Quality By Location"
     print FoodQualityByLocation
+
+    FoodQualityByLocation = fillZeroes(FoodQualityByLocation,locations)
 
     CourseRelevanceByLocation = dict(dataframe.groupby(['Session Location'])['Course Relevance'].mean())
     print "Course Relevance By Location"
     print CourseRelevanceByLocation
 
+    CourseRelevanceByLocation = fillZeroes(CourseRelevanceByLocation,locations)
+
+
     ratingFrame = pd.DataFrame(columns=['Faculty Rating','Food Quality','Course Relevance'])
     ratingFrame.loc[0] = FacultyRatingsByLocation.values()
     ratingFrame.loc[1] = FoodQualityByLocation.values()
     ratingFrame.loc[2] = CourseRelevanceByLocation.values()
+
+    '''Save this data in Sheet 2'''
+    ratingFrame.to_excel(writer, 'Location-Rating')
 
     x = np.arange(len(FacultyRatingsByLocation))
 
@@ -126,6 +138,11 @@ if __name__ == '__main__':
 
     SessionRatingFrame = pd.DataFrame(values)
     print SessionRatingFrame
+
+    '''Save this data in Sheet 3'''
+    SessionRatingFrame.to_excel(writer, 'Session-Rating')
+    writer.save()
+
     x = np.arange(len(FacultyRatingBySessionName))
 
     y = FacultyRatingBySessionName.values()
@@ -134,12 +151,19 @@ if __name__ == '__main__':
 
     plt.clf()
 
+    labels = [i for i in sessions]
+    print labels
+
     ax = plt.subplot(111)
-    p1 = ax.bar(x - 0.2, y, width=0.2, color='b', align='center')
-    p2 = ax.bar(x, z, width=0.2, color='g', align='center')
-    p3 = ax.bar(x + 0.2, k, width=0.2, color='r', align='center')
+    p1 = ax.bar(x - 0.1, y, width=0.1, color='b', align='center')
+    p2 = ax.bar(x, z, width=0.1, color='g', align='center')
+    p3 = ax.bar(x + 0.1, k, width=0.1, color='r', align='center')
     ax.xaxis_date()
-    ax.set_xticks([0, 1, 2])
-    ax.set_xticklabels(sessions)
-    ax.legend([p1, p2, p3], ['Faculty Quality', 'Food Quality', 'Course Relevance'])
+    plt.title("Session Wise Average Ratings")
+    ax.set_xticks([i for i in range(len(sessions))])
+    ax.set_xticklabels(labels,rotation=90,fontsize=10)
+    plt.tight_layout()
+    ax.legend([p1, p2, p3], ['Faculty Quality', 'Food Quality', 'Course Relevance'],loc='upper center', bbox_to_anchor=(0.5, 1.05),
+              ncol=3, fancybox=True, shadow=True)
     plt.savefig("Graphs/ratings_session_wise.png")
+

@@ -14,6 +14,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.hsalf.smilerating.SmileRating;
 import com.lnt.feedback.R;
 import com.lnt.feedback.adapters.FormAdapter;
 import com.lnt.feedback.models.RatingField;
@@ -74,18 +75,22 @@ public class FormActivity extends AppCompatActivity {
                             int input = getInputTypeFromString(inputType);
                             TextField text = new TextField(title, hint, input);
                             formList.add(text);
+                            DataSaveUtil.dataMap.put(hint,"");
                         } else if (type.equals("Rating")) {
                             String description = shot.child("description").getValue(String.class);
                             RatingField rating = new RatingField(description);
                             formList.add(rating);
+                            DataSaveUtil.dataMap.put(description, SmileRating.OKAY+"");
                         } else if (type.equals("Dropdown")) {
                             String description = shot.child("description").getValue(String.class);
-                            ArrayList<String> choice = new ArrayList<String>();
-                            for (DataSnapshot childShot : shot.child("choices").getChildren()) {
-                                choice.add(childShot.getValue(String.class));
+                            if(description!=null) {
+                                ArrayList<String> choice = new ArrayList<String>();
+                                for (DataSnapshot childShot : shot.child("choices").getChildren()) {
+                                    choice.add(childShot.getValue(String.class));
+                                }
+                                SpinnerChoice spinnerChoice = new SpinnerChoice(description, choice);
+                                formList.add(spinnerChoice);
                             }
-                            SpinnerChoice spinnerChoice = new SpinnerChoice(description, choice);
-                            formList.add(spinnerChoice);
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -110,18 +115,21 @@ public class FormActivity extends AppCompatActivity {
                 map.put("ID",getIntent().getStringExtra("ID"));
                 map.put("Name",getIntent().getStringExtra("name"));
                 map.put("College Code",getIntent().getStringExtra("college code"));
+                map.put("Session Name",getIntent().getStringExtra("session_name"));
 
                 DatabaseReference mFirebaseSubmitReference = FirebaseDatabase.getInstance().getReference().child("Submissions").child(formId);
                 DatabaseReference submitReference = mFirebaseSubmitReference.child("NodeError");
 
                 formEntreeID = map.get("ID");
                 Log.e("Map",map.toString());
-                submitReference = mFirebaseSubmitReference.child(formEntreeID);
+                submitReference = mFirebaseSubmitReference.child(formEntreeID).child(map.get("Session Name"));
+
 
                 //Initialize Submission Entered Parameters
                 submitReference.child("Name").setValue(map.get("Name"));
                 submitReference.child("College Code").setValue(map.get("College Code"));
                 submitReference.child("ID").setValue(map.get("ID"));
+                submitReference.child("Session Name").setValue(map.get("Session Name"));
 
                 //Iterate over Form Items and collect Submissions
                 for (Object formItem : formList) {

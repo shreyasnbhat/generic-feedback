@@ -31,7 +31,12 @@ public class RatingTypeViewHolder extends RecyclerView.ViewHolder {
         smileRating.setOnRatingSelectedListener(new SmileRating.OnRatingSelectedListener() {
             @Override
             public void onRatingSelected(int level, boolean reselected) {
-                DataSaveUtil.dataMap.put(description.getText().toString(),level+"");
+                if(!reselected) {
+                    DataSaveUtil.dataMap.put(description.getText().toString(), level + "");
+                }
+                else{
+                    DataSaveUtil.dataMap.put(description.getText().toString(), "3");
+                }
             }
         });
     }
@@ -66,6 +71,7 @@ public class RatingTypeViewHolder extends RecyclerView.ViewHolder {
                     break;
             }
         }
+
 
 
     }

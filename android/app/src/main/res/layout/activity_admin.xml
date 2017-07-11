@@ -10,11 +10,12 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.lnt.feedback.activities.AdminActivity">
 
-    <TextView
+    <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="Welcome Admin"
+        android:id="@+id/clear"
+        android:text="Erase Login Session"
         android:textSize="28sp"
         />
 

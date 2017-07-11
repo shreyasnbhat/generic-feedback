@@ -3,3 +3,10 @@ def IntegerConvertor(dataframe,columns):
         dataframe[column] = dataframe[column].astype(int)
 
     return dataframe
+
+def fillZeroes(var,dict_entries):
+    for i in dict_entries :
+        if i not in var.keys() :
+            var[i] = 0
+
+    return var
