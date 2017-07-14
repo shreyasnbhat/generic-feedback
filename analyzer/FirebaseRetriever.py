@@ -3,7 +3,6 @@ import json
 import pandas as pd
 import numpy as np
 import seaborn as sns
-from collections import Counter
 import matplotlib.pyplot as plt
 from utils import *
 import os
@@ -116,10 +115,12 @@ if __name__ == '__main__':
     p2 = ax.bar(x, z, width=0.2, color='g', align='center')
     p3 = ax.bar(x + 0.2, k, width=0.2, color='r', align='center')
     ax.xaxis_date()
+    ax.set_xlabel("Location")
+    ax.set_ylabel("Average Rating")
     ax.set_xticks([0,1,2])
     ax.set_xticklabels(['Mahape','Vidyalankar','Madh Island'])
     ax.legend([p1,p2,p3],['Faculty Quality','Food Quality','Course Relevance'])
-    plt.savefig("Graphs/ratings_location_wise.png")
+    plt.savefig("Graphs/ratings_location_wise.png",dpi=500)
 
     '''Do same as above Session Wise'''
     sessions = set(dataframe['Session Name'])
@@ -168,9 +169,11 @@ if __name__ == '__main__':
     ax.set_xticks([i for i in range(len(sessions))])
     ax.set_xticklabels(labels,rotation=90,fontsize=10)
     plt.tight_layout()
+    ax.set_xlabel("Sessions")
+    ax.set_ylabel("Average Rating")
     ax.legend([p1, p2, p3], ['Faculty Quality', 'Food Quality', 'Course Relevance'],loc='upper center', bbox_to_anchor=(0.5, 1.05),
               ncol=3, fancybox=True, shadow=True)
-    plt.savefig("Graphs/ratings_session_wise.png")
+    plt.savefig("Graphs/ratings_session_wise.png",dpi=500)
 
     '''Get location wise distribution for each Session'''
     FacultyQualityBySessionNameAndLocation = dict(
@@ -217,15 +220,17 @@ if __name__ == '__main__':
         p2 = ax.bar(x, z, width=0.1, color='g', align='center')
         p3 = ax.bar(x + 0.1, k, width=0.1, color='r', align='center')
         ax.xaxis_date()
-        plt.title("Session Wise Average Ratings for" + locations[i])
+        plt.title("Session Wise Average Ratings for " + locations[i])
         ax.set_xticks([j for j in range(len(list_of_labels))])
         print label_list[i]
+        ax.set_xlabel("Sessions")
+        ax.set_ylabel("Average Rating")
         ax.set_xticklabels(label_list[i], rotation=90, fontsize=10)
         plt.tight_layout()
         ax.legend([p1, p2, p3], ['Faculty Quality', 'Food Quality', 'Course Relevance'], loc='upper center',
                   bbox_to_anchor=(0.5, 1.05),
                   ncol=3, fancybox=True, shadow=True)
-        plt.savefig("Graphs/session-wise-by-location-" + locations[i] + ".png")
+        plt.savefig("Graphs/session-wise-by-location-" + locations[i] + ".png",dpi=500)
 
 
 
